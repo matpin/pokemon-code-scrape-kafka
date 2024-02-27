@@ -1,0 +1,52 @@
+version: '3'
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - '29092:29092'
+      - '9094:9094'
+    expose:
+      - "9093"
+    environment:
+      KAFKA_LISTENERS: EXTERNAL_SAME_HOST://0.0.0.0:29092,INTERNAL://0.0.0.0:9092,DOCKER://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL_SAME_HOST://localhost:29092,DOCKER://172.17.0.1:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL_SAME_HOST:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CFG_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+    depends_on:
+      - zookeeper
+
+  producer:
+    build: ./producer
+    container_name: producer
+    ports:
+      - "8001:8000"
+    depends_on:
+      - kafka
+
+  mongo-consumer:
+    build: ./mongoDB
+    container_name: mongo-consumer
+    ports:
+      - "8002:8000"
+    depends_on:
+      - kafka
+
+  webhook-consumer:
+    build: ./webhook
+    container_name: webhook-consumer
+    ports:
+      - "8003:8000"
+    depends_on:
+      - kafka
