@@ -1,0 +1,9 @@
+{
+    "type": "record",
+    "name": "pokemonCode",
+    "fields": [
+        {"name": "code", "type": "string"},
+        {"name": "gift", "type": "string"},
+        {"name": "expire_date", "type": "string"}
+    ]
+}
