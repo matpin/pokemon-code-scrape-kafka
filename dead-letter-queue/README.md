@@ -1,0 +1,1 @@
+A simple app that consumes messages from dead letter queue topic.
