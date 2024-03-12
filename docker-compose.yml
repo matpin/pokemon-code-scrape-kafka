@@ -50,3 +50,11 @@ services:
       - "8003:8000"
     depends_on:
       - kafka
+
+  dead-letter-queue:
+    build: ./dead-letter-queue
+    container_name: dead-letter-queue
+    ports:
+      - "8004:8000"
+    depends_on:
+      - kafka
