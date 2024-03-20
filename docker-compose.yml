@@ -68,3 +68,14 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+
+  mongo:
+    image: mongo
+    container_name: mongoDB
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
